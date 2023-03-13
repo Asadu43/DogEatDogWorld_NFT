@@ -5,10 +5,9 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-import "hardhat/console.sol";
 
 contract DogEatDogWorldNFT is ERC721, Ownable {
-    uint256 public deploymentTime;
+    uint256 public startingTime;
     uint256 mainPhaseCounter = 0;
 
     // Base URL string
@@ -24,7 +23,6 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
 
     enum PhasesEnum {
         OG,
-        WHITELIST,
         MAIN,
         PUBLIC
     }
@@ -37,7 +35,6 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
     Phase public currentPhase;
 
     constructor() ERC721("Dog Eat Dog World", "DEDW") {
-        deploymentTime = block.timestamp;
         currentPhase = Phase({totalMint: 777, phase: PhasesEnum.OG});
     }
 
@@ -46,6 +43,10 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
      */
     function _baseURI() internal view override returns (string memory) {
         return baseURL;
+    }
+
+    function startMinting() external onlyOwner {
+        startingTime = block.timestamp;
     }
 
     /**
@@ -71,27 +72,9 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
     function safeMint(bytes32[] calldata _merkleProof) public payable {
         require(msg.value == 0.04 ether, "Not Enough Ethers");
         uint256 tokenId = _tokenIdCounter.current();
-        /*        
-        if (block.timestamp <= deploymentTime + 24 hours) { //> NO Mint Phase 
-
-            if (block.timestamp > deploymentTime + 6 hours) {
-                currentPhase.phase = PhasesEnum.OG;
-            }
-        }
-        
-
-        if (currentPhase.phase == PhasesEnum.WHITELIST) {
-            require(tokenId < currentPhase.totalMint, "Out of Stock");
-            require(MerkleProof.verify(_merkleProof,merkleRoot,keccak256(abi.encodePacked(msg.sender))),"User Not Whitelisted");
-            require(ogListed[msg.sender] == false, "Already Minted NFT");
-            _tokenIdCounter.increment();
-            ogListed[msg.sender] = true;
-            _safeMint(msg.sender, tokenId);
-        } 
-    */
         if (
             currentPhase.phase == PhasesEnum.OG &&
-            block.timestamp >= (deploymentTime + 8 days)
+            block.timestamp >= (startingTime + 8 days)
         ) {
             currentPhase.phase = PhasesEnum.MAIN;
             currentPhase.totalMint = 7000 + (777 - tokenId);
@@ -99,13 +82,13 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
 
         if (currentPhase.phase == PhasesEnum.OG) {
             require(
-                block.timestamp <= deploymentTime + 24 hours,
+                block.timestamp <= startingTime + 24 hours,
                 "OG Mint phase is over"
             );
             require(ogListed[msg.sender] == false, "Already Minted NFT");
             require(tokenId < currentPhase.totalMint, "Out of Stock");
 
-            if (block.timestamp <= deploymentTime + 6 hours) {
+            if (block.timestamp <= startingTime + 6 hours) {
                 require(
                     MerkleProof.verify(
                         _merkleProof,
@@ -117,7 +100,6 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
                 _tokenIdCounter.increment();
                 ogListed[msg.sender] = true;
                 _safeMint(msg.sender, tokenId);
-                console.log(tokenId);
             } else {
                 _tokenIdCounter.increment();
                 ogListed[msg.sender] = true;
@@ -125,7 +107,7 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
             }
         } else if (currentPhase.phase == PhasesEnum.MAIN) {
             require(mainPhaseCounter < currentPhase.totalMint, "Out of Stock");
-            if (block.timestamp <= (deploymentTime + 8 days + 2 hours)) {
+            if (block.timestamp <= (startingTime + 8 days + 2 hours)) {
                 //TODO Check for whitelist
                 require(
                     MerkleProof.verify(
@@ -150,7 +132,7 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
     function freeMint(uint256 id) public {
         uint256 tokenId = _tokenIdCounter.current();
         require(
-            block.timestamp > (deploymentTime + 8 days),
+            block.timestamp > (startingTime + 8 days),
             "You can't mint in this week"
         );
         require(ogListed[msg.sender] == true, "Not applicable for free mint.");
