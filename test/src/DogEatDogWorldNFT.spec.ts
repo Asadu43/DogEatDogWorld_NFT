@@ -37,152 +37,138 @@ describe("DogEatDogWorldNFT Token", function () {
     const DogEatDogWorldNFT = await ethers.getContractFactory("DogEatDogWorldNFT", owner);
     dogEatDogWorldNFT = await upgrades.deployProxy(DogEatDogWorldNFT);
     await dogEatDogWorldNFT.deployed();
-    console.log("Box deployed to:", dogEatDogWorldNFT.address);
 
   });
 
-  it.only("Base URL", async function(){
-    await dogEatDogWorldNFT.setbaseURI("this_base.url/token/");
-    const tokenURI = await dogEatDogWorldNFT.tokenURI(999);
-    console.log(tokenURI);
-    
-  })
 
   it("MerkleTree Creationn And Set Markle Tree Root", async function () {
-    console.log(owner.address);
-    console.log("Box deployed to:", dogEatDogWorldNFT.address);
-
-
+  
     whiteListedAddresses = [owner, user1, user3, user5];
 
     const leafNodes = whiteListedAddresses.map((x: SignerWithAddress) => keccak256(x.address));
     mtree = new MerkleTree(leafNodes, keccak256, { sort: true });
     root = mtree.getHexRoot()
-
-    console.log(mtree.toString());
-    console.log('root ', root);
     const leaf = keccak256(user1.address)
     const proof = mtree.getHexProof(leaf)
-    console.log(bufToHex(proof));
 
     await dogEatDogWorldNFT.connect(owner).setMerkelRoot(root)
 
-    await dogEatDogWorldNFT.connect(owner).startMinting()
+
 
   })
 
-
-  it("User Not WhiteListed", async function () {
-    await expect(dogEatDogWorldNFT.connect(user2).safeMint([], { value: parseEther("0.04") })).to.be.revertedWith("User Not Whitelisted")
+  it("Minting is Not Allowed", async function () {
+  
+    for (let i = 0; i < whiteListedAddresses.length; i++) {
+      const leaf = keccak256(whiteListedAddresses[i].address)
+      const proof = mtree.getHexProof(leaf)
+      await expect(dogEatDogWorldNFT.connect(whiteListedAddresses[i]).safeMint(proof,2,{value:parseEther("0.005")})).to.be.revertedWith("Minting is Not Allowed");
+    }
   })
+
+  it("Start minting", async function () {
+    await dogEatDogWorldNFT.connect(owner).startMinting();
+  
+  })
+
 
   it("Not Enough Ethers", async function () {
-    await expect(dogEatDogWorldNFT.connect(user2).safeMint([], { value: parseEther("0.03") })).to.be.revertedWith("Not Enough Ethers")
+  
+    for (let i = 0; i < whiteListedAddresses.length; i++) {
+      const leaf = keccak256(whiteListedAddresses[i].address)
+      const proof = mtree.getHexProof(leaf)
+      await expect(dogEatDogWorldNFT.connect(whiteListedAddresses[i]).safeMint(proof,2,{value:parseEther("0.005")})).to.be.revertedWith("Not Enough Ethers");
+    }
   })
-
-  it("User WhiteListed", async function () {
-
-    console.log(mtree.toString());
-    console.log('root ', root);
-    const leaf = keccak256(user1.address)
-    const proof = mtree.getHexProof(leaf)
-    console.log(bufToHex(proof));
-
-    const leaf2 = keccak256(user3.address)
-    const proof2 = mtree.getHexProof(leaf2)
-    console.log(bufToHex(proof2));
-    await dogEatDogWorldNFT.connect(user1).safeMint(proof, { value: parseEther("0.04") })
-    await dogEatDogWorldNFT.connect(user3).safeMint(proof2, { value: parseEther("0.04") })
-    increaseTime(21600);
-  })
-
-  it("Already Minted NFT", async function () {
-    const leaf2 = keccak256(user3.address)
-    const proof2 = mtree.getHexProof(leaf2)
-    await expect(dogEatDogWorldNFT.connect(user1).safeMint(proof2, { value: parseEther("0.04") })).to.be.revertedWith("Already Minted NFT")
-  })
-
-  it("Any One Can Mint", async function () {
-    await dogEatDogWorldNFT.connect(user2).safeMint([], { value: parseEther("0.04") })
-  })
-
-  it("Already Minted NFT", async function () {
-    await expect(dogEatDogWorldNFT.connect(user2).safeMint([], { value: parseEther("0.04") })).to.be.revertedWith("Already Minted NFT")
-
-  })
-
-  it("Out of Stock", async function () {
-    await expect(dogEatDogWorldNFT.connect(user4).safeMint([], { value: parseEther("0.04") })).to.be.revertedWith("Out of Stock");
-    increaseTime(669500);
-  })
-
-  it("You can't mint in this week", async function () {
-
-    await expect(dogEatDogWorldNFT.connect(user1).freeMint(0)).to.be.revertedWith("You can't mint in this week")
-
-  })
-
-  it("You can't mint in this week", async function () {
-    await expect(dogEatDogWorldNFT.connect(user4).safeMint([], { value: parseEther("0.04") })).to.be.revertedWith("OG Mint phase is over");
-    increaseTime(100);
-  })
-
-  it("Next Phase (MAIN MINT) : User WhiteListed", async function () {
-
-    console.log(mtree.toString());
-    console.log('root ', root);
-    const leaf = keccak256(user1.address)
-    const proof = mtree.getHexProof(leaf)
-    console.log(bufToHex(proof));
-
-    const leaf2 = keccak256(user3.address)
-    const proof2 = mtree.getHexProof(leaf2)
-
-    console.log(bufToHex(proof2));
-
-    await dogEatDogWorldNFT.connect(user1).safeMint(proof, { value: parseEther("0.04") })
-    await dogEatDogWorldNFT.connect(user3).safeMint(proof2, { value: parseEther("0.04") })
-
-  });
 
   it("User Not Whitelisted", async function () {
-    await expect(dogEatDogWorldNFT.connect(user2).safeMint([], { value: parseEther("0.04") })).to.be.revertedWith("User Not Whitelisted")
-    increaseTime(7200);
-
+  
+    for (let i = 0; i < whiteListedAddresses.length; i++) {
+      const leaf = keccak256(whiteListedAddresses[i].address)
+      const proof = mtree.getHexProof(leaf)
+      await expect(dogEatDogWorldNFT.connect(whiteListedAddresses[i]).safeMint([],2,{value:parseEther("0.006")})).to.be.revertedWith("User Not Whitelisted");
+    }
   })
 
-  it("Free Mint", async function () {
-
-    await expect(dogEatDogWorldNFT.connect(user1).freeMint(2)).to.be.revertedWith("You haven't any NFT");
-
-  })
-
-  it("Free Mint", async function () {
-
-    await dogEatDogWorldNFT.connect(user1).freeMint(0)
-
-  })
-
-  it("Any One Can Mint", async function () {
-    await dogEatDogWorldNFT.connect(user2).safeMint([], { value: parseEther("0.04") })
-  })
-
-  it("Free Mint", async function () {
-
-    await expect(dogEatDogWorldNFT.connect(user1).freeMint(0)).to.be.revertedWith("Not applicable for free mint.")
-
-  })
-
-  it("Free Mint", async function () {
-
-    await expect(dogEatDogWorldNFT.connect(user3).freeMint(1)).to.be.revertedWith("Out of Stock")
-
-  })
-
-  it("Out of Stock", async function () {
-    await expect(dogEatDogWorldNFT.connect(user4).safeMint([], { value: parseEther("0.04") })).to.be.revertedWith("Out of Stock");
+  it("Can't mint more than 3", async function () {
+  
+    for (let i = 0; i < whiteListedAddresses.length; i++) {
+      const leaf = keccak256(whiteListedAddresses[i].address)
+      const proof = mtree.getHexProof(leaf)
+      await expect(dogEatDogWorldNFT.connect(whiteListedAddresses[i]).safeMint(proof,4,{value:parseEther("0.006")})).to.be.revertedWith("Can't mint more than 3");
+    }
   })
 
 
+  it("MINT NFT", async function () {
+  
+    for (let i = 0; i < whiteListedAddresses.length; i++) {
+      const leaf = keccak256(whiteListedAddresses[i].address)
+      const proof = mtree.getHexProof(leaf)
+      await dogEatDogWorldNFT.connect(whiteListedAddresses[i]).safeMint(proof,2,{value:parseEther("0.006")});
+    }
+  })
+
+
+  it("Not Enough Ethers", async function () {
+  
+    for (let i = 0; i < whiteListedAddresses.length; i++) {
+      const leaf = keccak256(whiteListedAddresses[i].address)
+      const proof = mtree.getHexProof(leaf)
+      await expect(dogEatDogWorldNFT.connect(whiteListedAddresses[i]).safeMint(proof,2,{value:parseEther("0.006")})).to.be.revertedWith("Can't mint more than 3");
+    }
+  })
+
+  it("MINT NFT", async function () {
+  
+    for (let i = 0; i < whiteListedAddresses.length; i++) {
+      const leaf = keccak256(whiteListedAddresses[i].address)
+      const proof = mtree.getHexProof(leaf)
+      await dogEatDogWorldNFT.connect(whiteListedAddresses[i]).safeMint(proof,1,{value:parseEther("0.006")});
+    }
+  })
+
+
+  it("Increase Time", async function () {
+  increaseTime(21600);
+
+})
+
+it("MINT NFT in Public Phase", async function () {
+
+  await dogEatDogWorldNFT.connect(user2).safeMint([],10,{value:parseEther("0.009")});
+  
+})
+
+it("You can't mint more than 10", async function () {
+
+  await expect(dogEatDogWorldNFT.connect(user2).safeMint([],11,{value:parseEther("0.009")})).to.be.revertedWith("You can't mint more than 10");
+  
+})
+
+it("Not Enough Ethers", async function () {
+
+  await expect(dogEatDogWorldNFT.connect(user2).safeMint([],11,{value:parseEther("0.006")})).to.be.revertedWith("Not Enough Ethers");
+  
+})
+
+it("MINT NFT in Public Phase", async function () {
+
+  await dogEatDogWorldNFT.connect(user4).safeMint([],10,{value:parseEther("0.009")});
+  
+})
+
+
+it("MINT NFT in Public Phase", async function () {
+
+  await expect(dogEatDogWorldNFT.connect(user5).safeMint([],10,{value:parseEther("0.009")})).to.be.revertedWith("MAX Supply Reached");
+  
+})
+
+it("MINT NFT in Public Phase", async function () {
+
+  await dogEatDogWorldNFT.connect(user4).safeMint([],8,{value:parseEther("0.009")});
+  
+})
 
 });

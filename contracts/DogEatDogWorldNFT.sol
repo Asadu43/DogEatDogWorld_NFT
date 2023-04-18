@@ -1,25 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "erc721a-upgradeable/contracts/ERC721AUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
 
 contract DogEatDogWorldNFT is
-    Initializable,
-    ERC721Upgradeable,
-    OwnableUpgradeable
+    ERC721AUpgradeable
 {
-    using StringsUpgradeable for uint256;
-    using CountersUpgradeable for CountersUpgradeable.Counter;
-
-    CountersUpgradeable.Counter private _tokenIdCounter;
+     using SafeMathUpgradeable for uint256;
 
     uint256 public startingTime;
-    uint256 mainPhaseCounter;
+    address public owner;
+    uint256 public constant MAX_SUPPLY = 40;
+    uint256 public constant WL_MAX_LIMIT = 3;
+    uint256 public constant MAX_LIMIT = 10;
+    uint256 public constant MINT_FEE_WL = 0.006 ether;
+    uint256 public constant MINT_FEE = 0.009 ether;
+
 
     // Base URL string
     string private baseURL;
@@ -27,25 +26,26 @@ contract DogEatDogWorldNFT is
     //Merkel tree root for whitelisting addresses
     bytes32 private merkleRoot;
 
-    mapping(address => bool) public ogListed;
+    mapping(address => uint256) public ogListed;
 
     enum PhasesEnum {
-        OG,
-        MAIN,
+        WHITELIST,
         PUBLIC
     }
 
-    struct Phase {
-        uint256 totalMint;
-        PhasesEnum phase;
+    PhasesEnum currentPhase;
+
+
+    function initialize() initializerERC721A  public {
+        __ERC721A_init("Dog Eat Dog World", "DEDW");
+        owner = msg.sender;
+        currentPhase =  PhasesEnum.WHITELIST;
     }
 
-    Phase public currentPhase;
-
-    function initialize() public initializer {
-        __ERC721_init("Dog Eat Dog World", "DEDW");
-        __Ownable_init();
-        currentPhase = Phase({totalMint: 222, phase: PhasesEnum.OG});
+     // Modifiers
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
     }
 
     /**
@@ -57,7 +57,7 @@ contract DogEatDogWorldNFT is
         // if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
         return
             bytes(baseURL).length > 0
-                ? string(abi.encodePacked(baseURL, tokenId.toString()))
+                ? string(abi.encodePacked(baseURL, tokenId))
                 : "";
     }
 
@@ -85,27 +85,22 @@ contract DogEatDogWorldNFT is
         return merkleRoot;
     }
 
-    function safeMint(bytes32[] calldata _merkleProof) public payable {
+        
+    function safeMint(
+        bytes32[] calldata _merkleProof,
+        uint256 quantity) public payable {
         require(startingTime != 0, "Minting is Not Allowed");
-        require(msg.value == 0.04 ether, "Not Enough Ethers");
-        uint256 tokenId = _tokenIdCounter.current();
+        require(totalSupply().add(quantity) <= MAX_SUPPLY, "MAX Supply Reached");
+
         if (
-            currentPhase.phase == PhasesEnum.OG &&
-            block.timestamp >= (startingTime + 8 days)
+            currentPhase == PhasesEnum.WHITELIST &&
+            block.timestamp >= startingTime + 2 hours
         ) {
-            currentPhase.phase = PhasesEnum.MAIN;
-            currentPhase.totalMint = 4222 + (222 - tokenId);
+            currentPhase =  PhasesEnum.PUBLIC;
         }
 
-        if (currentPhase.phase == PhasesEnum.OG) {
-            require(
-                block.timestamp <= startingTime + 24 hours,
-                "OG Mint phase is over"
-            );
-            require(ogListed[msg.sender] == false, "Already Minted NFT");
-            require(tokenId < currentPhase.totalMint, "Out of Stock");
-
-            if (block.timestamp <= startingTime + 6 hours) {
+        if (currentPhase == PhasesEnum.WHITELIST) {
+            require(msg.value == MINT_FEE_WL, "Not Enough Ethers");
                 require(
                     MerkleProofUpgradeable.verify(
                         _merkleProof,
@@ -114,50 +109,14 @@ contract DogEatDogWorldNFT is
                     ),
                     "User Not Whitelisted"
                 );
-                _tokenIdCounter.increment();
-                ogListed[msg.sender] = true;
-                _safeMint(msg.sender, tokenId);
-            } else {
-                _tokenIdCounter.increment();
-                ogListed[msg.sender] = true;
-                _safeMint(msg.sender, tokenId);
-            }
-        } else if (currentPhase.phase == PhasesEnum.MAIN) {
-            require(mainPhaseCounter < currentPhase.totalMint, "Out of Stock");
-            if (block.timestamp <= (startingTime + 8 days + 2 hours)) {
-                //TODO Check for whitelist
-                require(
-                    MerkleProofUpgradeable.verify(
-                        _merkleProof,
-                        merkleRoot,
-                        keccak256(abi.encodePacked(msg.sender))
-                    ),
-                    "User Not Whitelisted"
-                );
-
-                mainPhaseCounter++;
-                _tokenIdCounter.increment();
-                _safeMint(msg.sender, tokenId);
-            } else {
-                mainPhaseCounter++;
-                _tokenIdCounter.increment();
-                _safeMint(msg.sender, tokenId);
-            }
-        }
-    }
-
-    function freeMint(uint256 id) public {
-        uint256 tokenId = _tokenIdCounter.current();
-        require(
-            block.timestamp > (startingTime + 8 days),
-            "You can't mint in this week"
-        );
-        require(ogListed[msg.sender] == true, "Not applicable for free mint.");
-        require(ownerOf(id) == msg.sender, "You haven't any NFT");
-        require(mainPhaseCounter < currentPhase.totalMint, "Out of Stock");
-        mainPhaseCounter++;
-        ogListed[msg.sender] = false;
-        _tokenIdCounter.increment();
-        _safeMint(msg.sender, tokenId);
+                require((ogListed[msg.sender] + quantity)  <=  WL_MAX_LIMIT , "Can't mint more than 3");
+                ogListed[msg.sender] = (ogListed[msg.sender] + quantity);
+                _mint(msg.sender, quantity);
+             
+        }else if(currentPhase ==  PhasesEnum.PUBLIC){
+        require(msg.value == MINT_FEE, "Not Enough Ethers");
+        require(quantity <= MAX_LIMIT, "You can't mint more than 10");
+        _mint(msg.sender, quantity);
+        } 
     }
 }
