@@ -6,10 +6,8 @@ import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
 
-contract DogEatDogWorldNFT is
-    ERC721AUpgradeable
-{
-     using SafeMathUpgradeable for uint256;
+contract DogEatDogWorldNFT is ERC721AUpgradeable {
+    using SafeMathUpgradeable for uint256;
 
     uint256 public startingTime;
     address public owner;
@@ -18,7 +16,6 @@ contract DogEatDogWorldNFT is
     uint256 public constant MAX_LIMIT = 10;
     uint256 public constant MINT_FEE_WL = 0.006 ether;
     uint256 public constant MINT_FEE = 0.009 ether;
-
 
     // Base URL string
     string private baseURL;
@@ -35,14 +32,13 @@ contract DogEatDogWorldNFT is
 
     PhasesEnum currentPhase;
 
-
-    function initialize() initializerERC721A  public {
+    function initialize() public initializerERC721A {
         __ERC721A_init("Dog Eat Dog World", "DEDW");
         owner = msg.sender;
-        currentPhase =  PhasesEnum.WHITELIST;
+        currentPhase = PhasesEnum.WHITELIST;
     }
 
-     // Modifiers
+    // Modifiers
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can call this function");
         _;
@@ -85,38 +81,43 @@ contract DogEatDogWorldNFT is
         return merkleRoot;
     }
 
-        
     function safeMint(
         bytes32[] calldata _merkleProof,
-        uint256 quantity) public payable {
+        uint256 quantity
+    ) public payable {
         require(startingTime != 0, "Minting is Not Allowed");
-        require(totalSupply().add(quantity) <= MAX_SUPPLY, "MAX Supply Reached");
+        require(
+            totalSupply().add(quantity) <= MAX_SUPPLY,
+            "MAX Supply Reached"
+        );
 
         if (
             currentPhase == PhasesEnum.WHITELIST &&
             block.timestamp >= startingTime + 2 hours
         ) {
-            currentPhase =  PhasesEnum.PUBLIC;
+            currentPhase = PhasesEnum.PUBLIC;
         }
 
         if (currentPhase == PhasesEnum.WHITELIST) {
             require(msg.value == MINT_FEE_WL, "Not Enough Ethers");
-                require(
-                    MerkleProofUpgradeable.verify(
-                        _merkleProof,
-                        merkleRoot,
-                        keccak256(abi.encodePacked(msg.sender))
-                    ),
-                    "User Not Whitelisted"
-                );
-                require((ogListed[msg.sender] + quantity)  <=  WL_MAX_LIMIT , "Can't mint more than 3");
-                ogListed[msg.sender] = (ogListed[msg.sender] + quantity);
-                _mint(msg.sender, quantity);
-             
-        }else if(currentPhase ==  PhasesEnum.PUBLIC){
-        require(msg.value == MINT_FEE, "Not Enough Ethers");
-        require(quantity <= MAX_LIMIT, "You can't mint more than 10");
-        _mint(msg.sender, quantity);
-        } 
+            require(
+                MerkleProofUpgradeable.verify(
+                    _merkleProof,
+                    merkleRoot,
+                    keccak256(abi.encodePacked(msg.sender))
+                ),
+                "User Not Whitelisted"
+            );
+            require(
+                (ogListed[msg.sender] + quantity) <= WL_MAX_LIMIT,
+                "Can't mint more than 3"
+            );
+            ogListed[msg.sender] = (ogListed[msg.sender] + quantity);
+            _mint(msg.sender, quantity);
+        } else if (currentPhase == PhasesEnum.PUBLIC) {
+            require(msg.value == MINT_FEE, "Not Enough Ethers");
+            require(quantity <= MAX_LIMIT, "You can't mint more than 10");
+            _mint(msg.sender, quantity);
+        }
     }
 }
