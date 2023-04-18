@@ -13,6 +13,7 @@ import 'hardhat-contract-sizer';
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-etherscan";
+import "@openzeppelin/hardhat-upgrades";
 // import "@codingsh/hardhat-blockscout";
 import { HardhatUserConfig, task } from "hardhat/config";
 import type { HttpNetworkUserConfig } from "hardhat/types";

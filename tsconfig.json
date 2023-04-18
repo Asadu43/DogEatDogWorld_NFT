@@ -12,6 +12,6 @@
     "outDir": "dist",
     "typeRoots": ["node_modules/@types","typings"]
   },
-  "include": ["./src", "./test", "./typechain"],
+  "include": ["./src", "./test", "./typechain","./scripts"],
   "files": ["./hardhat.config.ts"]
 }

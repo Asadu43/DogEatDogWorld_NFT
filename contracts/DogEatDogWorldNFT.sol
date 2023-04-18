@@ -1,23 +1,31 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
 
-contract DogEatDogWorldNFT is ERC721, Ownable {
+contract DogEatDogWorldNFT is
+    Initializable,
+    ERC721Upgradeable,
+    OwnableUpgradeable
+{
+    using StringsUpgradeable for uint256;
+    using CountersUpgradeable for CountersUpgradeable.Counter;
+
+    CountersUpgradeable.Counter private _tokenIdCounter;
+
     uint256 public startingTime;
-    uint256 mainPhaseCounter = 0;
+    uint256 mainPhaseCounter;
 
     // Base URL string
     string private baseURL;
 
     //Merkel tree root for whitelisting addresses
     bytes32 private merkleRoot;
-
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdCounter;
 
     mapping(address => bool) public ogListed;
 
@@ -34,19 +42,23 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
 
     Phase public currentPhase;
 
-    constructor() ERC721("Dog Eat Dog World", "DEDW") {
-        currentPhase = Phase({totalMint: 777, phase: PhasesEnum.OG});
+    function initialize() public initializer {
+        __ERC721_init("Dog Eat Dog World", "DEDW");
+        __Ownable_init();
+        currentPhase = Phase({totalMint: 222, phase: PhasesEnum.OG});
     }
 
     /**
-     * @dev Returns the base URL of the NFT .
+     * @dev Returns the token URL of the NFT .
      */
-    function _baseURI() internal view override returns (string memory) {
-        return baseURL;
-    }
-
-    function startMinting() external onlyOwner {
-        startingTime = block.timestamp;
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
+        // if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+        return
+            bytes(baseURL).length > 0
+                ? string(abi.encodePacked(baseURL, tokenId.toString()))
+                : "";
     }
 
     /**
@@ -55,6 +67,10 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
      */
     function setbaseURI(string memory _uri) external onlyOwner {
         baseURL = _uri;
+    }
+
+    function startMinting() external onlyOwner {
+        startingTime = block.timestamp;
     }
 
     /**
@@ -70,6 +86,7 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
     }
 
     function safeMint(bytes32[] calldata _merkleProof) public payable {
+        require(startingTime != 0, "Minting is Not Allowed");
         require(msg.value == 0.04 ether, "Not Enough Ethers");
         uint256 tokenId = _tokenIdCounter.current();
         if (
@@ -77,7 +94,7 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
             block.timestamp >= (startingTime + 8 days)
         ) {
             currentPhase.phase = PhasesEnum.MAIN;
-            currentPhase.totalMint = 7000 + (777 - tokenId);
+            currentPhase.totalMint = 4222 + (222 - tokenId);
         }
 
         if (currentPhase.phase == PhasesEnum.OG) {
@@ -90,7 +107,7 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
 
             if (block.timestamp <= startingTime + 6 hours) {
                 require(
-                    MerkleProof.verify(
+                    MerkleProofUpgradeable.verify(
                         _merkleProof,
                         merkleRoot,
                         keccak256(abi.encodePacked(msg.sender))
@@ -110,7 +127,7 @@ contract DogEatDogWorldNFT is ERC721, Ownable {
             if (block.timestamp <= (startingTime + 8 days + 2 hours)) {
                 //TODO Check for whitelist
                 require(
-                    MerkleProof.verify(
+                    MerkleProofUpgradeable.verify(
                         _merkleProof,
                         merkleRoot,
                         keccak256(abi.encodePacked(msg.sender))

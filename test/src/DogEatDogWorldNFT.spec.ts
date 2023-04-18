@@ -2,7 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { Contract, BigNumber, Signer } from "ethers";
 import { keccak256, parseEther } from "ethers/lib/utils";
-import hre, { ethers } from "hardhat";
+import hre, { ethers, upgrades } from "hardhat";
 import MerkleTree from "merkletreejs/dist/MerkleTree";
 import { increaseTime } from "../utils/utilities";
 
@@ -33,12 +33,25 @@ describe("DogEatDogWorldNFT Token", function () {
   before(async () => {
     [owner, user1, user2, user3, user4, user5, user6] = await ethers.getSigners();
 
+
     const DogEatDogWorldNFT = await ethers.getContractFactory("DogEatDogWorldNFT", owner);
-    dogEatDogWorldNFT = await DogEatDogWorldNFT.deploy();
+    dogEatDogWorldNFT = await upgrades.deployProxy(DogEatDogWorldNFT);
+    await dogEatDogWorldNFT.deployed();
+    console.log("Box deployed to:", dogEatDogWorldNFT.address);
+
   });
+
+  it.only("Base URL", async function(){
+    await dogEatDogWorldNFT.setbaseURI("this_base.url/token/");
+    const tokenURI = await dogEatDogWorldNFT.tokenURI(999);
+    console.log(tokenURI);
+    
+  })
 
   it("MerkleTree Creationn And Set Markle Tree Root", async function () {
     console.log(owner.address);
+    console.log("Box deployed to:", dogEatDogWorldNFT.address);
+
 
     whiteListedAddresses = [owner, user1, user3, user5];
 
@@ -51,8 +64,11 @@ describe("DogEatDogWorldNFT Token", function () {
     const leaf = keccak256(user1.address)
     const proof = mtree.getHexProof(leaf)
     console.log(bufToHex(proof));
-    
+
     await dogEatDogWorldNFT.connect(owner).setMerkelRoot(root)
+
+    await dogEatDogWorldNFT.connect(owner).startMinting()
+
   })
 
 
