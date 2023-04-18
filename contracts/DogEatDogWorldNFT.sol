@@ -13,7 +13,7 @@ contract DogEatDogWorldNFT is
 
     uint256 public startingTime;
     address public owner;
-    uint256 public constant MAX_SUPPLY = 40;
+    uint256 public constant MAX_SUPPLY = 4444;
     uint256 public constant WL_MAX_LIMIT = 3;
     uint256 public constant MAX_LIMIT = 10;
     uint256 public constant MINT_FEE_WL = 0.006 ether;
