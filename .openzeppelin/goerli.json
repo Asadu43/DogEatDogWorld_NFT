@@ -39,6 +39,16 @@
       "address": "0xAB033308653B583A9Ea32440Da958c7fB414c14A",
       "txHash": "0x3e1aebfa5b9eeb27caa37cf37add4dc47fdedd2dcfb4ddd045aec05b4cfcfd95",
       "kind": "transparent"
+    },
+    {
+      "address": "0xe387622a418560c763ff608582e9Aae698071439",
+      "txHash": "0x99881289420b8b5719d426ac4450b3ed03e28361c66363dc4625106c0a5b2114",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xD2201A96816732cA84E04f8c1A954dE2B971f699",
+      "txHash": "0x7744a75bb9a6b289dc80bb2a24813f638846069f3b5a9063e1663e0183fd3e84",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -1497,6 +1507,180 @@
             "type": "t_enum(PhasesEnum)1894",
             "contract": "DogEatDogWorldNFT",
             "src": "contracts/DogEatDogWorldNFT.sol:36"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_enum(PhasesEnum)1894": {
+            "label": "enum DogEatDogWorldNFT.PhasesEnum",
+            "members": [
+              "WHITELIST",
+              "PUBLIC"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        }
+      }
+    },
+    "0a31178dc429d02a1d29c59ca161fc76442e6faeeaeb97c4dafbb9b686f1be62": {
+      "address": "0x630283441d0452FDc24D03AFF5B92073a6603012",
+      "txHash": "0x2d605722d179f4d575dd45b108463aee499d87394c7ae51558a306783c1567a3",
+      "layout": {
+        "solcVersion": "0.8.4",
+        "storage": [
+          {
+            "label": "startingTime",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:12"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:13"
+          },
+          {
+            "label": "baseURL",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_string_storage",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:21"
+          },
+          {
+            "label": "merkleRoot",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_bytes32",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:24"
+          },
+          {
+            "label": "ogListed",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:26"
+          },
+          {
+            "label": "currentPhase",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_enum(PhasesEnum)1894",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:33"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_enum(PhasesEnum)1894": {
+            "label": "enum DogEatDogWorldNFT.PhasesEnum",
+            "members": [
+              "WHITELIST",
+              "PUBLIC"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        }
+      }
+    },
+    "51d6a735987f22ab83e150b486563a459271f6d8086dc4ee1a16fbe4d3e0c6f5": {
+      "address": "0x3c550399D2eB795E6E37a0Def162dB2A37b1b5cc",
+      "txHash": "0x226fbf936620df71adf7a2a0012055fc972eb7dfe1889352000d6f6f870313ae",
+      "layout": {
+        "solcVersion": "0.8.4",
+        "storage": [
+          {
+            "label": "startingTime",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:12"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:13"
+          },
+          {
+            "label": "baseURL",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_string_storage",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:21"
+          },
+          {
+            "label": "merkleRoot",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_bytes32",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:24"
+          },
+          {
+            "label": "ogListed",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:26"
+          },
+          {
+            "label": "currentPhase",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_enum(PhasesEnum)1894",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:33"
           }
         ],
         "types": {

@@ -99,7 +99,7 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
         }
 
         if (currentPhase == PhasesEnum.WHITELIST) {
-            require(msg.value == MINT_FEE_WL, "Not Enough Ethers");
+            require(msg.value == MINT_FEE_WL.mul(quantity), "Not Enough Ethers");
             require(
                 MerkleProofUpgradeable.verify(
                     _merkleProof,
@@ -115,7 +115,7 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
             ogListed[msg.sender] = (ogListed[msg.sender] + quantity);
             _mint(msg.sender, quantity);
         } else if (currentPhase == PhasesEnum.PUBLIC) {
-            require(msg.value == MINT_FEE, "Not Enough Ethers");
+            require(msg.value == MINT_FEE.mul(quantity), "Not Enough Ethers");
             require(quantity <= MAX_LIMIT, "You can't mint more than 10");
             _mint(msg.sender, quantity);
         }
