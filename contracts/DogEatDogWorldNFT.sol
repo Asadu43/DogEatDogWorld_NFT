@@ -25,6 +25,8 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
 
     mapping(address => uint256) public ogListed;
 
+    bool public isRevealed;
+
     enum PhasesEnum {
         WHITELIST,
         PUBLIC
@@ -32,9 +34,20 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
 
     PhasesEnum currentPhase;
 
+
+    error MAX_SUPPLY_REACHED();
+    error NOT_MINT_0_NFT();
+    error MINTING_IS_NOT_ALLOWED();
+    error INSUFFICIENT_FUNDS();
+    error USER_NOT_WHITELISTED();
+    error NOT_MINT_MORE_THAN_3();
+    error NOT_MINT_MORE_THAN_10();
+
+
     function initialize() public initializerERC721A {
         __ERC721A_init("Dog Eat Dog World", "DEDW");
         owner = msg.sender;
+        isRevealed = false;
         currentPhase = PhasesEnum.WHITELIST;
     }
 
@@ -50,11 +63,17 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
     function tokenURI(
         uint256 tokenId
     ) public view virtual override returns (string memory) {
-        // if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
-        return
-            bytes(baseURL).length > 0
-                ? string(abi.encodePacked(baseURL, tokenId))
-                : "";
+        if (isRevealed) {
+            return
+                bytes(baseURL).length > 0
+                    ? string(abi.encodePacked(baseURL, tokenId))
+                    : "";
+        } else {
+            return
+                bytes(baseURL).length > 0
+                    ? string(abi.encodePacked(baseURL, "unRevealed.json"))
+                    : "";
+        }
     }
 
     /**
@@ -67,6 +86,10 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
 
     function startMinting() external onlyOwner {
         startingTime = block.timestamp;
+    }
+
+    function updateTime(uint256 _time) external onlyOwner {
+        startingTime = _time;
     }
 
     /**
@@ -85,11 +108,9 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
         bytes32[] calldata _merkleProof,
         uint256 quantity
     ) public payable {
-        require(startingTime != 0, "Minting is Not Allowed");
-        require(
-            totalSupply().add(quantity) <= MAX_SUPPLY,
-            "MAX Supply Reached"
-        );
+        if(quantity == 0) revert NOT_MINT_0_NFT();
+        if(startingTime == 0 ) revert MINTING_IS_NOT_ALLOWED();
+        if(totalSupply().add(quantity) > MAX_SUPPLY) revert MAX_SUPPLY_REACHED();
 
         if (
             currentPhase == PhasesEnum.WHITELIST &&
@@ -99,27 +120,21 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
         }
 
         if (currentPhase == PhasesEnum.WHITELIST) {
-            require(
-                msg.value == MINT_FEE_WL.mul(quantity),
-                "Not Enough Ethers"
-            );
-            require(
-                MerkleProofUpgradeable.verify(
+            if(msg.value != MINT_FEE_WL.mul(quantity)) revert INSUFFICIENT_FUNDS();
+            if(MerkleProofUpgradeable.verify(
                     _merkleProof,
                     merkleRoot,
                     keccak256(abi.encodePacked(msg.sender))
-                ),
-                "User Not Whitelisted"
-            );
-            require(
-                (ogListed[msg.sender] + quantity) <= WL_MAX_LIMIT,
-                "Can't mint more than 3"
-            );
+                ) == false
+            ) revert USER_NOT_WHITELISTED();
+            if(
+                (ogListed[msg.sender] + quantity) > WL_MAX_LIMIT
+            ) revert NOT_MINT_MORE_THAN_3();
             ogListed[msg.sender] = (ogListed[msg.sender] + quantity);
             _mint(msg.sender, quantity);
         } else if (currentPhase == PhasesEnum.PUBLIC) {
-            require(msg.value == MINT_FEE.mul(quantity), "Not Enough Ethers");
-            require(quantity <= MAX_LIMIT, "You can't mint more than 10");
+            if(msg.value != MINT_FEE.mul(quantity))  revert INSUFFICIENT_FUNDS();
+            if(quantity > MAX_LIMIT) revert NOT_MINT_MORE_THAN_10();
             _mint(msg.sender, quantity);
         }
     }
@@ -128,5 +143,19 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
     function withdraw() external onlyOwner {
         uint256 balance = address(this).balance;
         payable(owner).transfer(balance);
+    }
+
+    function getPrice() external view returns (uint256) {
+        if (currentPhase == PhasesEnum.WHITELIST) {
+            return MINT_FEE_WL;
+        } else if (currentPhase == PhasesEnum.PUBLIC) {
+            return MINT_FEE;
+        } else {
+            return 0;
+        }
+    }
+
+    function reveal(bool _isRevealed) external onlyOwner {
+        isRevealed = _isRevealed;
     }
 }
