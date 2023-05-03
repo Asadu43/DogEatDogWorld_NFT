@@ -5,9 +5,12 @@ import "erc721a-upgradeable/contracts/ERC721AUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+
 
 contract DogEatDogWorldNFT is ERC721AUpgradeable {
     using SafeMathUpgradeable for uint256;
+    using StringsUpgradeable for uint256;
 
     uint256 public startingTime;
     address public owner;
@@ -66,7 +69,7 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
         if (isRevealed) {
             return
                 bytes(baseURL).length > 0
-                    ? string(abi.encodePacked(baseURL, tokenId))
+                    ? string(abi.encodePacked(baseURL, tokenId.toString(), ".json"))
                     : "";
         } else {
             return
@@ -148,7 +151,7 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
     function getPrice() external view returns (uint256) {
         if (currentPhase == PhasesEnum.WHITELIST) {
             return MINT_FEE_WL;
-        } else if (currentPhase == PhasesEnum.PUBLIC) {
+        } else if (block.timestamp >= startingTime + 2 hours) {
             return MINT_FEE;
         } else {
             return 0;

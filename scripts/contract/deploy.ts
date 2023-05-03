@@ -7,7 +7,7 @@ async function main() {
     const DogEatDogWorldNFT = await ethers.getContractFactory("DogEatDogWorldNFT", signers[1]);
     const dogEatDogWorldNFT = await upgrades.deployProxy(DogEatDogWorldNFT);
     await dogEatDogWorldNFT.deployed();
-    console.log("Box deployed to:", dogEatDogWorldNFT.address);
+    console.log("Contract deployed to:", dogEatDogWorldNFT.address);
     // await dogEatDogWorldNFT.initialize();
 }
 
