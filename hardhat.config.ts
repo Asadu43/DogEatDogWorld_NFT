@@ -96,6 +96,15 @@ const config: HardhatUserConfig = {
             enabled: true
           }
         }
+      },
+      {
+        version: "0.8.13",
+        settings: {
+          optimizer: {
+            runs: 200,
+            enabled: true
+          }
+        }
       }
     ],
   },
@@ -109,7 +118,7 @@ const config: HardhatUserConfig = {
       }
     },
     forknet: {
-      url: "https://mainnet.infura.io/v3/${process.env.INFURA_KEY}",
+      url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
     },
     mainnet: {
       ...sharedNetworkConfig,

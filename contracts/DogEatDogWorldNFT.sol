@@ -6,9 +6,15 @@ import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "operator-filter-registry/src/upgradeable/DefaultOperatorFiltererUpgradeable.sol";
 
+import "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
 
-contract DogEatDogWorldNFT is ERC721AUpgradeable {
+contract DogEatDogWorldNFT is
+    DefaultOperatorFiltererUpgradeable,
+    ERC2981Upgradeable,
+    ERC721AUpgradeable
+{
     using SafeMathUpgradeable for uint256;
     using StringsUpgradeable for uint256;
 
@@ -37,7 +43,6 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
 
     PhasesEnum currentPhase;
 
-
     error MAX_SUPPLY_REACHED();
     error NOT_MINT_0_NFT();
     error MINTING_IS_NOT_ALLOWED();
@@ -45,7 +50,6 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
     error USER_NOT_WHITELISTED();
     error NOT_MINT_MORE_THAN_3();
     error NOT_MINT_MORE_THAN_10();
-
 
     function initialize() public initializerERC721A {
         __ERC721A_init("Dog Eat Dog World", "DEDW");
@@ -61,6 +65,59 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
     }
 
     /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(
+        bytes4 interfaceId
+    )
+        public
+        view
+        virtual
+        override(ERC2981Upgradeable, ERC721AUpgradeable)
+        returns (bool)
+    {
+        return
+            interfaceId == type(IERC2981Upgradeable).interfaceId ||
+            super.supportsInterface(interfaceId);
+    }
+
+
+    /**
+     * @dev Sets the royalty information that all ids in this contract will default to.
+     *
+     * Requirements:
+     *
+     * - `receiver` cannot be the zero address.
+     * - `feeNumerator` cannot be greater than the fee denominator.
+     */
+    function setDefaultRoyalty(address receiver, uint96 feeNumerator) public onlyOwner{
+        _setDefaultRoyalty(receiver, feeNumerator);
+    }
+
+    /**
+     * @dev Sets the royalty information for a specific token id, overriding the global default.
+     *
+     * Requirements:
+     *
+     * - `receiver` cannot be the zero address.
+     * - `feeNumerator` cannot be greater than the fee denominator.
+     */
+    function setTokenRoyalty(
+        uint256 tokenId,
+        address receiver,
+        uint96 feeNumerator
+    ) public onlyOwner {
+        _setTokenRoyalty(tokenId, receiver, feeNumerator);
+    }
+
+    /**
+     * @dev Resets royalty information for the token id back to the global default.
+     */
+    function resetTokenRoyalty(uint256 tokenId) public onlyOwner{
+        _resetTokenRoyalty(tokenId);
+    }
+
+    /**
      * @dev Returns the token URL of the NFT .
      */
     function tokenURI(
@@ -69,7 +126,9 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
         if (isRevealed) {
             return
                 bytes(baseURL).length > 0
-                    ? string(abi.encodePacked(baseURL, tokenId.toString(), ".json"))
+                    ? string(
+                        abi.encodePacked(baseURL, tokenId.toString(), ".json")
+                    )
                     : "";
         } else {
             return
@@ -111,9 +170,10 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
         bytes32[] calldata _merkleProof,
         uint256 quantity
     ) public payable {
-        if(quantity == 0) revert NOT_MINT_0_NFT();
-        if(startingTime == 0 ) revert MINTING_IS_NOT_ALLOWED();
-        if(totalSupply().add(quantity) > MAX_SUPPLY) revert MAX_SUPPLY_REACHED();
+        if (quantity == 0) revert NOT_MINT_0_NFT();
+        if (startingTime == 0) revert MINTING_IS_NOT_ALLOWED();
+        if (totalSupply().add(quantity) > MAX_SUPPLY)
+            revert MAX_SUPPLY_REACHED();
 
         if (
             currentPhase == PhasesEnum.WHITELIST &&
@@ -123,21 +183,23 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
         }
 
         if (currentPhase == PhasesEnum.WHITELIST) {
-            if(msg.value != MINT_FEE_WL.mul(quantity)) revert INSUFFICIENT_FUNDS();
-            if(MerkleProofUpgradeable.verify(
+            if (msg.value != MINT_FEE_WL.mul(quantity))
+                revert INSUFFICIENT_FUNDS();
+            if (
+                MerkleProofUpgradeable.verify(
                     _merkleProof,
                     merkleRoot,
                     keccak256(abi.encodePacked(msg.sender))
                 ) == false
             ) revert USER_NOT_WHITELISTED();
-            if(
-                (ogListed[msg.sender] + quantity) > WL_MAX_LIMIT
-            ) revert NOT_MINT_MORE_THAN_3();
+            if ((ogListed[msg.sender] + quantity) > WL_MAX_LIMIT)
+                revert NOT_MINT_MORE_THAN_3();
             ogListed[msg.sender] = (ogListed[msg.sender] + quantity);
             _mint(msg.sender, quantity);
         } else if (currentPhase == PhasesEnum.PUBLIC) {
-            if(msg.value != MINT_FEE.mul(quantity))  revert INSUFFICIENT_FUNDS();
-            if(quantity > MAX_LIMIT) revert NOT_MINT_MORE_THAN_10();
+            if (msg.value != MINT_FEE.mul(quantity))
+                revert INSUFFICIENT_FUNDS();
+            if (quantity > MAX_LIMIT) revert NOT_MINT_MORE_THAN_10();
             _mint(msg.sender, quantity);
         }
     }
@@ -160,5 +222,46 @@ contract DogEatDogWorldNFT is ERC721AUpgradeable {
 
     function reveal(bool _isRevealed) external onlyOwner {
         isRevealed = _isRevealed;
+    }
+
+    // Overrides new functions royality enforement
+
+    function setApprovalForAll(
+        address operator,
+        bool approved
+    ) public override onlyAllowedOperatorApproval(operator) {
+        super.setApprovalForAll(operator, approved);
+    }
+
+    function approve(
+        address operator,
+        uint256 tokenId
+    ) public payable override onlyAllowedOperatorApproval(operator) {
+        super.approve(operator, tokenId);
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public payable override onlyAllowedOperator(from) {
+        super.transferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public payable override onlyAllowedOperator(from) {
+        super.safeTransferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory data
+    ) public payable override onlyAllowedOperator(from) {
+        super.safeTransferFrom(from, to, tokenId, data);
     }
 }

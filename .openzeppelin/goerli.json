@@ -84,6 +84,36 @@
       "address": "0x775b4B86CD4cf8001fCAfDC79638a97917e255fa",
       "txHash": "0xfea3d1361c912f88eb4e23f6ec0485faa28811ab01df9288c72d9bb4d085fe30",
       "kind": "transparent"
+    },
+    {
+      "address": "0x868490F027d4617e23052eb21509dfbc98d2F989",
+      "txHash": "0x1fde2f8891b80b68901aed04e832439574115a167405d9f38192c1a4081f323a",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x4617A7E78B0c1a2886b27138907f9681BD15B263",
+      "txHash": "0x92560b736698cc1d20d214779d07998af67a683f8e377faa8554eaa080ed98e4",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x90295350ACfF495e4ea5f43eeBf2dCf4BAB8734C",
+      "txHash": "0xe8aa876ca65b3ac52bb23d69ca579830b8a4c94052aeed4d4309b7a212df74fb",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x42aC548bD9e568d3C56Bf645b03354819D6A6479",
+      "txHash": "0x86d9996ba61b1ef2e249088ea436d076d2e00df185aa48b021dfd40114c6a040",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x924C90BB01Bd068DCd8D07c300B1115e534DF357",
+      "txHash": "0xddebc53ea435df536d1575ead837886ae8cf9fda79f23e8314f8f3543646bf93",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x4DD9eFa5Da9a42A0094C4bb5eb16D46eaF8f65dE",
+      "txHash": "0xb4c0a4a1ac004952307a47594cd2a74be48d55cb80a368be838db4ccf5da39a5",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -2415,6 +2445,684 @@
           "t_uint256": {
             "label": "uint256",
             "numberOfBytes": "32"
+          }
+        }
+      }
+    },
+    "46241ec9da8a90b22726a6bf2024af3ab01360647a1f63e315b487b8e0678fb3": {
+      "address": "0xD105bA3073eAaAaCcaE5F659E018E51fECC2D64b",
+      "txHash": "0xea0164f6059218b14bfba4692761a62063a843324e2be4160e51031bc46fe88e",
+      "layout": {
+        "solcVersion": "0.8.13",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "startingTime",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:18"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:19"
+          },
+          {
+            "label": "baseURL",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_string_storage",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:27"
+          },
+          {
+            "label": "merkleRoot",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_bytes32",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:30"
+          },
+          {
+            "label": "ogListed",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:32"
+          },
+          {
+            "label": "isRevealed",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_bool",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:34"
+          },
+          {
+            "label": "currentPhase",
+            "offset": 1,
+            "slot": "6",
+            "type": "t_enum(PhasesEnum)2356",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:41"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_enum(PhasesEnum)2356": {
+            "label": "enum DogEatDogWorldNFT.PhasesEnum",
+            "members": [
+              "WHITELIST",
+              "PUBLIC"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "4a300cf8d66ca3101df4692361b888a58f4ae2e8ab9c837805580ebfb2d25ee9": {
+      "address": "0x6F34F634a0e6d763a331CEF417B03358EbbedBe6",
+      "txHash": "0x33fd782f0546db2edb4813b0293e59d41387f98d6e8efd9d035142cf02bcf19c",
+      "layout": {
+        "solcVersion": "0.8.13",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "_defaultRoyaltyInfo",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_struct(RoyaltyInfo)1329_storage",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:36"
+          },
+          {
+            "label": "_tokenRoyaltyInfo",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)1329_storage)",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:37"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "53",
+            "type": "t_array(t_uint256)48_storage",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:123"
+          },
+          {
+            "label": "startingTime",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_uint256",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:23"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:24"
+          },
+          {
+            "label": "baseURL",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_string_storage",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:32"
+          },
+          {
+            "label": "merkleRoot",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_bytes32",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:35"
+          },
+          {
+            "label": "ogListed",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:37"
+          },
+          {
+            "label": "isRevealed",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_bool",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:39"
+          },
+          {
+            "label": "currentPhase",
+            "offset": 1,
+            "slot": "106",
+            "type": "t_enum(PhasesEnum)3808",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:46"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)48_storage": {
+            "label": "uint256[48]",
+            "numberOfBytes": "1536"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_enum(PhasesEnum)3808": {
+            "label": "enum DogEatDogWorldNFT.PhasesEnum",
+            "members": [
+              "WHITELIST",
+              "PUBLIC"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(RoyaltyInfo)1329_storage)": {
+            "label": "mapping(uint256 => struct ERC2981Upgradeable.RoyaltyInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(RoyaltyInfo)1329_storage": {
+            "label": "struct ERC2981Upgradeable.RoyaltyInfo",
+            "members": [
+              {
+                "label": "receiver",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "royaltyFraction",
+                "type": "t_uint96",
+                "offset": 20,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_uint96": {
+            "label": "uint96",
+            "numberOfBytes": "12"
+          }
+        }
+      }
+    },
+    "3f550603bf54f00ccee0632bd8927b83f04860d277ed29e3dcccc8cf2d0246b0": {
+      "address": "0x3F3701BbFc00312fb4f7Bcf5B650E86ABd746Ef2",
+      "txHash": "0xa7dff6c9aca5fbaac60df9af27eb4ca0826e0f0372cf3c817b615f16c70fd632",
+      "layout": {
+        "solcVersion": "0.8.13",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "_defaultRoyaltyInfo",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_struct(RoyaltyInfo)216_storage",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:36"
+          },
+          {
+            "label": "_tokenRoyaltyInfo",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)216_storage)",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:37"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "53",
+            "type": "t_array(t_uint256)48_storage",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:123"
+          },
+          {
+            "label": "startingTime",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_uint256",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:21"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:22"
+          },
+          {
+            "label": "baseURL",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_string_storage",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:30"
+          },
+          {
+            "label": "merkleRoot",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_bytes32",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:33"
+          },
+          {
+            "label": "ogListed",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:35"
+          },
+          {
+            "label": "isRevealed",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_bool",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:37"
+          },
+          {
+            "label": "currentPhase",
+            "offset": 1,
+            "slot": "106",
+            "type": "t_enum(PhasesEnum)2652",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:44"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)48_storage": {
+            "label": "uint256[48]",
+            "numberOfBytes": "1536"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_enum(PhasesEnum)2652": {
+            "label": "enum DogEatDogWorldNFT.PhasesEnum",
+            "members": [
+              "WHITELIST",
+              "PUBLIC"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(RoyaltyInfo)216_storage)": {
+            "label": "mapping(uint256 => struct ERC2981Upgradeable.RoyaltyInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(RoyaltyInfo)216_storage": {
+            "label": "struct ERC2981Upgradeable.RoyaltyInfo",
+            "members": [
+              {
+                "label": "receiver",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "royaltyFraction",
+                "type": "t_uint96",
+                "offset": 20,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_uint96": {
+            "label": "uint96",
+            "numberOfBytes": "12"
+          }
+        }
+      }
+    },
+    "286aa55416648a2842d03e26f2e1c588cf896e7fa7b3b96f7d00cbc48f160b21": {
+      "address": "0x70AA0EB58369F7b058F03E7Cd489eABb6648Dafc",
+      "txHash": "0x33835cf2b1a1ac8a286f1dbbef7e114574808376a88f6c152a62ff919a36aa78",
+      "layout": {
+        "solcVersion": "0.8.13",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "_defaultRoyaltyInfo",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_struct(RoyaltyInfo)216_storage",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:36"
+          },
+          {
+            "label": "_tokenRoyaltyInfo",
+            "offset": 0,
+            "slot": "52",
+            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)216_storage)",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:37"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "53",
+            "type": "t_array(t_uint256)48_storage",
+            "contract": "ERC2981Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol:123"
+          },
+          {
+            "label": "startingTime",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_uint256",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:21"
+          },
+          {
+            "label": "owner",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_address",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:22"
+          },
+          {
+            "label": "baseURL",
+            "offset": 0,
+            "slot": "103",
+            "type": "t_string_storage",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:30"
+          },
+          {
+            "label": "merkleRoot",
+            "offset": 0,
+            "slot": "104",
+            "type": "t_bytes32",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:33"
+          },
+          {
+            "label": "ogListed",
+            "offset": 0,
+            "slot": "105",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:35"
+          },
+          {
+            "label": "isRevealed",
+            "offset": 0,
+            "slot": "106",
+            "type": "t_bool",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:37"
+          },
+          {
+            "label": "currentPhase",
+            "offset": 1,
+            "slot": "106",
+            "type": "t_enum(PhasesEnum)2652",
+            "contract": "DogEatDogWorldNFT",
+            "src": "contracts/DogEatDogWorldNFT.sol:44"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)48_storage": {
+            "label": "uint256[48]",
+            "numberOfBytes": "1536"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_enum(PhasesEnum)2652": {
+            "label": "enum DogEatDogWorldNFT.PhasesEnum",
+            "members": [
+              "WHITELIST",
+              "PUBLIC"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(RoyaltyInfo)216_storage)": {
+            "label": "mapping(uint256 => struct ERC2981Upgradeable.RoyaltyInfo)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(RoyaltyInfo)216_storage": {
+            "label": "struct ERC2981Upgradeable.RoyaltyInfo",
+            "members": [
+              {
+                "label": "receiver",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "royaltyFraction",
+                "type": "t_uint96",
+                "offset": 20,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_uint96": {
+            "label": "uint96",
+            "numberOfBytes": "12"
           }
         }
       }
