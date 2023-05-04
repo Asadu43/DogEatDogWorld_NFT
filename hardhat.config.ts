@@ -38,7 +38,6 @@ const argv = yargs.option("network", {
   .help(false)
   .version(false).argv;
 
-const DEFAULT_MNEMONIC:string = process.env.MNEMONIC || "";
 
 const sharedNetworkConfig: HttpNetworkUserConfig = {
   live: true,
@@ -48,11 +47,7 @@ const sharedNetworkConfig: HttpNetworkUserConfig = {
 };
 if (process.env.PRIVATE_KEY) {
   sharedNetworkConfig.accounts = [process.env.PRIVATE_KEY];
-} else {
-  sharedNetworkConfig.accounts = {
-    mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC,
-  };
-}
+} 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
@@ -114,7 +109,7 @@ const config: HardhatUserConfig = {
       allowUnlimitedContractSize: true,
       accounts: {
         accountsBalance: "100000000000000000000000000000000000000000",
-        mnemonic: process.env.MNEMONIC || DEFAULT_MNEMONIC
+        mnemonic: process.env.MNEMONIC
       }
     },
     forknet: {
